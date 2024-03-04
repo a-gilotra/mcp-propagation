@@ -6,8 +6,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import math
-from millisim.Environment import Environment
-from millisim.Integrator import Integrator
+from formosa_sim.Environment import Environment
+from formosa_sim.Integrator import Integrator
 
 env = Environment(
     mat_setup = None,

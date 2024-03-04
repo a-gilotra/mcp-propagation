@@ -32,11 +32,11 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 import ROOT
-from millisim.Environment import Environment
-from millisim.Integrator import Integrator
-from millisim.Detector import *
-import millisim.Drawing as Drawing
-from millisim.MilliTree import MilliTree
+from formosa_sim.Environment import Environment
+from formosa_sim.Integrator import Integrator
+from formosa_sim.Detector import *
+import formosa_sim.Drawing as Drawing
+from formosa_sim.MilliTree import MilliTree
 import run_params as rp
 
 # do you want to VISualize, or collect STATS?

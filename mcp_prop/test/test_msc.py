@@ -1,11 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import math
-from millisim.Environment import Environment
-from millisim.Integrator import Integrator
-from millisim.Detector import *
-import millisim.fast_integrate as fast
-import millisim.Drawing as Drawing
+from formosa_sim.Environment import Environment
+from formosa_sim.Integrator import Integrator
+from formosa_sim.Detector import *
+import formosa_sim.fast_integrate as fast
+import formosa_sim.Drawing as Drawing
 from tqdm import tqdm
 
 env = Environment(

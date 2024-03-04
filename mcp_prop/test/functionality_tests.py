@@ -7,10 +7,10 @@
 from __future__ import print_function 
 import numpy as np
 import matplotlib.pyplot as plt
-from millisim.Environment import Environment
-from millisim.Integrator import Integrator
-from millisim.Detector import *
-import millisim.Drawing as Drawing
+from formosa_sim.Environment import Environment
+from formosa_sim.Integrator import Integrator
+from formosa_sim.Detector import *
+import formosa_sim.Drawing as Drawing
 import sys
 try:
     from tqdm import tqdm
@@ -52,35 +52,30 @@ det = PlaneDetector(
     height = 5.0,
 )
 
-p_mag = np.loadtxt('/Users/ayushg/Documents/GitHub/mcp_prop/p_array.txt')
-# generate a few random trajectories and visualize
-print("Propagating a few random muon trajectories through CMS environment to visualize...")
+# FORESEE output momenta
+p_mag = np.loadtxt('/Users/ayushg/Documents/GitHub/mcp-propagation/mcp_prop/p_array.txt')
+
+print("Using FORESEE-generated momenta...")
 trajs = []
 intersects = []
-for i in tqdm(range(15)):
-    # pt = np.random.uniform(3,10) * 1000
-    # eta = np.random.uniform(-0.5,0.5)
-    # phi = np.random.uniform(-0.5,0.5)
-    # theta = 2*np.arctan(np.exp(-eta))
+rand=np.random.uniform(0, len(p_mag), 20)
+for i in tqdm(range(len(rand))):
+
     px = p_mag[i][0] 
     py = p_mag[i][1]
     pz = p_mag[i][2]
-    # px = pt * np.cos(phi)
-    # py = pt * np.sin(phi)
-    # pz = 0 if eta==0 else pt / np.tan(theta)
+
 
     x0 = np.array([0, 0, 0, px, py, pz])
     traj,_ = itg.propagate(x0)
 
     trajs.append(traj)
-    ## Claudio: 25 March 2023 ... this is a bug?
-    ##  intersects.append(det.FindIntersection(traj))
+
     intersects.append(det.find_intersection(traj))
 
 plt.figure(figsize=(15,7))
 Drawing.Draw3Dtrajs(trajs, subplot=121)
-## Claudio: 25 March 2023 ... this is a bug?
-# c1,c2,c3,c4 = det.GetCorners()
+
 c1,c2,c3,c4 = det.get_corners()
 Drawing.DrawLine(c1,c2,is3d=True)
 Drawing.DrawLine(c2,c3,is3d=True)
@@ -94,7 +89,6 @@ Drawing.DrawXYslice(trajs, subplot=122)
 
 plt.figure(figsize=(11.7,7))
 Drawing.DrawXZslice(trajs, drawBFieldFromEnviron=env, drawColorbar=True)
-#plt.savefig("test.png", bbox_inches='tight')
 
 print("Propagating muons through blocks of silicon/iron to test Bethe-Bloch energy loss...")
 # test dE/dx energy loss
@@ -107,8 +101,6 @@ for p0,c in zip([2000,3000,5000,10000,20000],list("rgbcm")):
 plt.gca().set_xlim(0,18)
 plt.gca().set_ylim(0,20)
 plt.plot([4,4],[0,20],'k--')
-# plt.text(3.0, 13, "Si", fontsize=14)
-# plt.text(4.4, 13, "Fe", fontsize=14)
 plt.xlabel("x (m)")
 plt.ylabel("Momentum (GeV/c)")
 plt.legend()

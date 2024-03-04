@@ -11,9 +11,9 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 import math
-from millisim.Environment import Environment
-from millisim.Integrator import Integrator
-import millisim.Drawing as Drawing
+from formosa_sim.Environment import Environment
+from formosa_sim.Integrator import Integrator
+import formosa_sim.Drawing as Drawing
 
 pyVersion = sys.version_info[0]
 if pyVersion == 2:
