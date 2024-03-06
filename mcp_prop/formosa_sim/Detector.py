@@ -4,11 +4,7 @@ from __future__ import print_function
 import numpy as np
 
 class PlaneDetector(object):
-    # def __init__(self, dist_to_origin, eta, phi, width=None, height=None):
     def __init__(self, dist_to_origin, theta, phi, width=None, height=None):
-        # if width or height are None, detector plane has infinite extent
-        # width corresponds to eta-hat direction (self.unit_w)
-        # height corresonds to phi-hat direction (self.unit_v)
 
         self.dist_to_origin = float(dist_to_origin)
 
@@ -232,15 +228,15 @@ class Box(object):
             ret.append(ixf[1,:])
         return ret
 
-class MilliqanDetector(object):
-    def __init__(self, dist_to_origin, eta, phi, 
+class FormosaDetector(object):
+    def __init__(self, dist_to_origin, theta, phi, 
                  nrows=3, ncols=2, nlayers=3,
                  bar_width = 0.05, bar_height = 0.05, bar_length = 0.86,
                  bar_gap = 0.01, layer_gap = 0.30):
 
         width = ncols*bar_width + (ncols-1)*bar_gap
         height = nrows*bar_height + (nrows-1)*bar_gap
-        self.face = PlaneDetector(dist_to_origin, eta, phi, width, height)
+        self.face = PlaneDetector(dist_to_origin, theta, phi, width, height)
 
         self.__nrows = nrows
         self.__ncols = ncols

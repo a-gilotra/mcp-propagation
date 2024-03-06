@@ -13,14 +13,14 @@ particleQ = 1.0  # in electron charge units
 particleM = 105. # in MEV
 
 distToDetector = 33.
-eta = 0.16
+theta = 0.03
 rock_begins = distToDetector - 17.
 
 detWidth = 5.0
 detHeight = 5.0
 detDepth = 1.0
 
-etabounds = (eta-0.08, eta+0.08)
+thetabounds = (theta-0.08, theta+0.08)
 ptCut = 17.
 phibounds = (0.00, 0.22)
 

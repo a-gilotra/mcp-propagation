@@ -88,19 +88,19 @@ itg = Integrator(
 
 det = PlaneDetector(
     dist_to_origin = rp.distToDetector,
-    eta = rp.eta,
+    theta = rp.theta,
     phi = 0.0,
     width = rp.detWidth,
     height = rp.detHeight,
 )
 
-mdet = MilliqanDetector(
+mdet = FormosaDetector(
     dist_to_origin = rp.distToDetector,
-    eta = rp.eta,
+    theta = rp.theta,
     phi = 0.0,
-    nrows = 3,
+    nrows = 2,
     ncols = 2,
-    nlayers = 3,
+    nlayers = 4,
     bar_width = 1.0,
     bar_height = 1.0,
     bar_length = 2.0, 
@@ -161,22 +161,19 @@ ntotaltrajs = 0
 
 # loop until we get ntrajs trajectories (VIS) or hits (STATS)
 while len(trajs)<ntrajs:
-    # magp = ROOT.Double(-1)
-    # eta = ROOT.Double(-1)
     magp = -1
-    eta = -1
+    theta = 90
 
-    etalow =  rp.etabounds[0]
-    etahigh =  rp.etabounds[1]
+    thetalow =  rp.thetabounds[0]
+    thetahigh =  rp.thetabounds[1]
 
     # draw random pT values from the distribution. Set minimum at 10 GeV
     while magp < rp.ptCut:
         magp = pt_dist.GetRandom()
 
     # eta distribution is uniform for small eta
-    eta = np.random.rand()*(etahigh-etalow) + etalow
+    th = np.random.rand()*(thetahigh-thetalow) + thetalow
 
-    th = 2*np.arctan(np.exp(-eta))
     # magp = magp/np.sin(th)
     phimin, phimax =  rp.phibounds
     phi = np.random.rand() * (phimax-phimin) + phimin
@@ -198,7 +195,7 @@ while len(trajs)<ntrajs:
     bar_intersects.append(mdet.find_entries_exits(traj, assume_straight_line=True))
     if idict is not None:
         intersects.append((len(trajs)-1,idict["x_int"]))
-        print(len(trajs), ": p =",magp, ", eta =", eta, ", phi =", phi, ", eff =", float(len(intersects))/ntotaltrajs)
+        print(len(trajs), ": p =",magp, ", theta =", theta, ", phi =", phi, ", eff =", float(len(intersects))/ntotaltrajs)
         if mode=="VIS":
             pass
         elif mode=="STATS":
@@ -209,7 +206,7 @@ while len(trajs)<ntrajs:
             magpint = np.linalg.norm(idict["p_int"])
             txtfile = open(outname,'a')
             txtfile.write("{0:f}\t{1:f}\t{2:f}\t{3:f}\t{4:f}\t{5:f}\t{6:f}\t{7:f}\t{8:f}\t{9:f}\t{10:f}\t{11:f}\t{12:f}\n".format(
-                    t, itg.Q, itg.m, magp, magp*np.sin(th), eta, phi,
+                    t, itg.Q, itg.m, magp, magp*np.sin(th), theta, phi,
                     idict["theta"], idict["theta_w"], idict["theta_v"], idict["w"], idict["v"], magpint))
             txtfile.close()
             if rp.useCustomOutput:
