@@ -33,6 +33,8 @@ class Environment(object):
 
     CMS_LENGTH = 15.0
     CMS_RADIUS = 3.6
+    ATLAS_LENGTH = 48.0
+    ATLAS_RADUS = 15.0
 
     ## parameters to load bfield
     ZMIN = -1500
@@ -85,7 +87,7 @@ class Environment(object):
         if m is None:
             m = "none"
         m = m.lower()
-        allowed = ["none", "sife", "justrock", "cms"]
+        allowed = ["none", "sife", "justrock", "cms", "atlas"]
         allowed += ["unif_"+mat for mat in Environment.materials]
         if m not in allowed:
             raise Exception("Unrecognized material setup: "+m)
@@ -205,6 +207,24 @@ class Environment(object):
                 mat = 'air'
                         
             return mat
+        
+        if self.mat_setup == 'atlas':
+            withinLength = -self.ATLAS_LENGTH/2.0 < z < self.ATLAS_LENGTH
+            r = np.sqrt(x**2+y**2)
+
+            if not withinLength:
+                return 'air'
+            elif 1.8 < r < 2.2 or\
+                 6.1 < r < 8.0 or\
+                 13.8 < r < 14.03 or\
+                 15.2 < r < 16.57:
+                    mat = 'fe'
+            elif r < 5.0:
+                mat = 'pbw04'
+            else:
+                mat = 'air'
+            
+            return 'air'
 
         raise Exception("ERROR: invalid material setup. Shouldn't get here")
 

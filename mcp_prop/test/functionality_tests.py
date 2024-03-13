@@ -23,7 +23,7 @@ if pyVersion == 2:
 else:
     bFile = "../bfield/bfield_coarse_p3.pkl"
 env = Environment(
-    mat_setup="cms", 
+    mat_setup="atlas", 
     bfield="cms", 
     bfield_file=bFile, 
     rock_begins=17.0
@@ -93,7 +93,7 @@ Drawing.DrawXZslice(trajs, drawBFieldFromEnviron=env, drawColorbar=True)
 print("Propagating muons through blocks of silicon/iron to test Bethe-Bloch energy loss...")
 # test dE/dx energy loss
 env.bfield = None
-env.mat_setup = 'cms'
+env.mat_setup = 'atlas'
 plt.figure()
 for p0,c in zip([2000,3000,5000,10000,20000],list("rgbcm")):
     traj,_ = itg.propagate([0,0,0,p0,0,0])

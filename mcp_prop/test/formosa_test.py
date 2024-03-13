@@ -15,7 +15,7 @@
 ##  -Q is the charge (program randomly chooses each to be pos/neg)
 ##  -m is the particle mass
 ##  -p/pT are the initial (transverse) momentum in MeV
-##  -eta/phi are the initial eta/phi of the particle
+##  -theta/phi are the initial theta/phi of the particle
 ##  -theta is the of incidence on the detector plane, w.r.t. the normal
 ##  -w,v are coordinates in the detector plane, where (0,0) is the center.
 ##  -thetaW, thetaV are the angles of incidence projected on the w,v directions
@@ -53,7 +53,7 @@ if mode=="STATS":
     print("Simulating {0} hits on the detector.".format(ntrajs))
     print(' ')
 visWithStats = False
-
+outname = "formosa_test.txt"
 if mode=="STATS":
     print("Outputting to "+outname)
 
@@ -63,7 +63,7 @@ if pyVersion == 2:
 else:
     bFile = "../bfield/bfield_coarse_p3.pkl"
 env = Environment(
-    mat_setup = 'cms',
+    mat_setup = 'atlas',
     bfield = rp.bfield_type,
     bfield_file = bFile,
     rock_begins = rp.rock_begins,
@@ -97,7 +97,7 @@ det = PlaneDetector(
 mdet = FormosaDetector(
     dist_to_origin = rp.distToDetector,
     theta = rp.theta,
-    phi = 0.0,
+    phi = 10.0,
     nrows = 2,
     ncols = 2,
     nlayers = 4,
@@ -134,7 +134,7 @@ if mode=="STATS":
     if os.path.isfile(outname):
         ow = 'q'
         while ow not in 'yYnN':
-            ow = raw_input("Overwrite file? (y/n) ")
+            ow = input("Overwrite file? (y/n) ")
         if ow in 'yY':
             txtfile = open(outname,'w')
             if rp.useCustomOutput:
@@ -158,23 +158,30 @@ starttime = time.time()
 intersects = []
 bar_intersects = []
 ntotaltrajs = 0
+tmp = 0
+p1 = np.loadtxt('/Users/ayushg/Documents/GitHub/mcp-propagation/mcp_prop/p_array.txt')
+pm = np.array([])
+for i in range(len(p1)):
+    pm = np.append(pm, np.sqrt(p1[i][0]**2+p1[i][1]**2+p1[i][2]**2)/100)
 
 # loop until we get ntrajs trajectories (VIS) or hits (STATS)
 while len(trajs)<ntrajs:
-    magp = -1
-    theta = 90
+    tmp = tmp+1
+    t = tmp
+    # magp = -1
+    magp = p1[tmp]
+    theta = 0.03
 
     thetalow =  rp.thetabounds[0]
     thetahigh =  rp.thetabounds[1]
 
     # draw random pT values from the distribution. Set minimum at 10 GeV
-    while magp < rp.ptCut:
-        magp = pt_dist.GetRandom()
+    # while magp < rp.ptCut:
+    #     magp = pt_dist.GetRandom()
 
-    # eta distribution is uniform for small eta
+    # theta distribution is uniform for smalltheta 
     th = np.random.rand()*(thetahigh-thetalow) + thetalow
 
-    # magp = magp/np.sin(th)
     phimin, phimax =  rp.phibounds
     phi = np.random.rand() * (phimax-phimin) + phimin
     itg.Q *= np.random.randint(2)*2 - 1 
@@ -183,6 +190,7 @@ while len(trajs)<ntrajs:
     # convert to cartesian momentum in MeV
     p = 1000*magp * np.array([np.sin(th)*np.cos(phi),np.sin(th)*np.sin(phi),np.cos(th)])
     x0 = np.array([0,0,0,p[0],p[1],p[2]])
+    print(x0)
     
     # simulate until nsteps steps is reached, or the particle passes x=10
     traj,tvec = itg.propagate(x0)
@@ -213,7 +221,7 @@ while len(trajs)<ntrajs:
                 txtfile = open(outnameCustom, 'a')
                 txtfile.write("\t".join(str(x) for x in rp.outputFunction(traj, det)) + '\n')
                 txtfile.close()
-            mt.SetValues(idict["x_int"], idict["p_int"])
+            mt.SetValues(idict["x_int"],itg, idict["p_int"])
             mt.Fill()
 
 endtime = time.time()
